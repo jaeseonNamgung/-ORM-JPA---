@@ -35,3 +35,13 @@ out/
 
 ### VS Code ###
 .vscode/
+
+jpa-basic/.gradle/7.4/executionHistory/executionHistory.bin
+
+jpa-basic/.gradle/7.4/executionHistory/executionHistory.lock
+
+jpa-basic/.gradle/7.4/fileHashes/fileHashes.bin
+
+jpa-basic/.gradle/7.4/fileHashes/fileHashes.lock
+
+jpa-basic/.gradle/buildOutputCleanup/outputFiles.bin
