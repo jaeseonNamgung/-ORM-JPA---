@@ -17,8 +17,8 @@ public class JpaMain {
 
         try {
             Member findMember = entityManager.find(Member.class, 1L);
-            System.out.println("findMember.id = " + findMember.getId());
-            System.out.println("findMember.name = " + findMember.getName());
+
+            entityManager.remove(findMember);
 
 
             entityTransaction.commit();
