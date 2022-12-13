@@ -19,15 +19,19 @@ public class JpaMain {
         entityTransaction.begin();
         // JPA의 모든 데이터 변경은 트랜잭션 안에서 실행 해야 한다. 중요!!!
         try {
-            Member findMember = entityManager.find(Member.class, 1L);
-            findMember.setName("HelloJPA");
+            // 비영속
+            Member member = new Member();
+            member.setId(100L);
+            member.setName("HelloJPA");
 
-            // JPA 엔티티를 통해서 값을 가져오면 그 값은 JPA가 관리하게 된다.
-            // JPA 는 트랜잭션 커밋하는 시점에 변경이 됐는지 안 됐는지를 체크 한다
-            // 만약 변경이 됐다면 JPA는 자동으로 update 쿼리를 동작 시킨다. 그런 후 커밋하게 된다.
-            // entityManager.persist(findMember);
+            
+            // 영속
+            // persist() 는 DB에 저장 되는게 아니라 영속성 컨텍스트에 저장된다.
+            // DB에 저장되는 시점은 commit 되는 시점이다.
+            entityManager.persist(member);
 
             entityTransaction.commit();
+            
         }catch (Exception e){
             entityTransaction.rollback();
         }finally{
