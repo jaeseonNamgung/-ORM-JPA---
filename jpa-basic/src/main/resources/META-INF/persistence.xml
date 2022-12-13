@@ -1,0 +1,43 @@
+<!--
+    hibernate를 사용하기 위해서는 xml 파일에서 hibernate 설정이 필요하다.
+    gradle 환경에서도 META-INF > xml 파일 설정이 가능하다.
+-->
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+             version="2.0">
+    <persistence-unit name="hello">
+        <class>hellojpa.Member</class>
+        <properties>
+            <!--필수 속성-->
+            <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
+            <property name="javax.persistence.jdbc.user" value="sa"/>
+            <property name="javax.persistence.jdbc.password" value=""/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:h2:tcp://localhost/~/test"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+<!--
+    데이터베이스 방언
+    - JPA는 특정 데이터베이스에 종속 X
+    - 각각의 데이터 베이스가 제공하는 SQL 문법과 함수는 조금씩 다름
+        - 가변 문자: MySQL은 VARCHAR, Oracle은 VARCHAR2
+        - 문자열을 자르는 함수: MySQL 표준은 SUBSTRING(), Oracle은 SUBSTR()
+        - 페이징: MySQL은 LIMIT, Oracle은 ROWNUM
+    - 방언: SQL 표준을 지키지 않은 특정 데이터베이스만의 고유 기능
+    - hibernate.dialect 에서 설정 가능
+
+    - hibernate.dialect 속성에 지정
+        - H2 : org.hibernate.dialect.H2Dialect
+        - Oracle 10g : org.hibernate.dialect.Oracle10gDialect
+        - MySQL : org.hibernate.dialect.MySQL5Dialect
+    - 하이버네이트는 40가지 이상의 데이터베이스 방언 지원
+-->
+
+            <!-- 옵션 -->
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+            <property name="hibernate.use_sql_comments" value="true"/>
+
+            
+        </properties>
+    </persistence-unit>
+</persistence>
