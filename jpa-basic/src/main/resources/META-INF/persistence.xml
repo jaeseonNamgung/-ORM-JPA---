@@ -7,10 +7,8 @@
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
              version="2.0">
     <persistence-unit name="hello">
-        <class>jpabook.jpashop.domain.Item</class>
-        <class>jpabook.jpashop.domain.Member</class>
-        <class>jpabook.jpashop.domain.Order</class>
-        <class>jpabook.jpashop.domain.OrderItem</class>
+        <class>hellojpa.Team</class>
+        <class>hellojpa.Member</class>
         <properties>
             <!--필수 속성-->
             <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
@@ -39,6 +37,7 @@
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
             <property name="hibernate.use_sql_comments" value="true"/>
+            <property name="hibernate.hbm2ddl.auto" value="create"/>
 
             
         </properties>
