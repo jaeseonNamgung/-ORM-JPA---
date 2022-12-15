@@ -11,7 +11,10 @@ public class Team {
     @Column(name = "TEAM_ID")
     private Long teamId;
     private String name;
-    @OneToMany(mappedBy = "team")
+    
+    // 1대N 방식
+    @OneToMany
+    @JoinColumn(name = "TEAM_ID")
     private List<Member> members = new ArrayList<>();
 
     public Long getTeamId() {

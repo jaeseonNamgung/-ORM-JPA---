@@ -14,11 +14,10 @@ public class Member {
     @Column(name = "USERNAME")
     private String username;
 
-    // 단방향 연관 관계 설정
+    // 1대N 양방향 연관관계 방법
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(name = "TEAM_ID", insertable = false, updatable = false)
     private Team team;
-
     public Long getId() {
         return id;
     }
@@ -35,12 +34,4 @@ public class Member {
         this.username = username;
     }
 
-    public Team getTeam() {
-        return team;
-    }
-
-    public void changeTeam(Team team) {
-        this.team = team;
-        team.getMembers().add(this);
-    }
 }
