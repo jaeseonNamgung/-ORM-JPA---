@@ -19,8 +19,6 @@ public class JpaMain {
         EntityTransaction entityTransaction = entityManager.getTransaction();
         entityTransaction.begin();
         try{
-            Order order = new Order();
-            order.addOrderItem(new OrderItem());
 
             entityTransaction.commit();
         }catch (Exception e){
