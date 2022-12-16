@@ -1,6 +1,7 @@
 package jpabook.jpashop.domain;
 
 import javax.persistence.*;
+import javax.xml.namespace.QName;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,10 @@ public class Order {
 
     @OneToMany(mappedBy = "order")
     private List<OrderItem> orderItems = new ArrayList<>();
+
+    @OneToOne
+    @JoinColumn(name = "DELIVERY_ID")
+    private Delivery delivery;
 
     public Long getId() {
         return id;
