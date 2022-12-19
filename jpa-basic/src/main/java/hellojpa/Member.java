@@ -17,8 +17,12 @@ public class Member extends BaseEntity {
     private String username;
 
     // 1대N 양방향 연관관계 방법
-    @ManyToOne
-    @JoinColumn(name = "TEAM_ID", insertable = false, updatable = false)
+    // fetch = FetchType.LAZY : 지연 로딩
+    // Member와 Team 중에 Member만 90% 이상 사용할 경우 지연로딩을 사용
+    // Team은 프록시 객체로 조회 되고 애플리케이션을 실행할 경우 Member 쿼리만 조회 되고
+    // Team은 필요할 경우 쿼리가 실행된다.
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "TEAM_ID")
     private Team team;
 
 
@@ -38,4 +42,11 @@ public class Member extends BaseEntity {
         this.username = username;
     }
 
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
 }

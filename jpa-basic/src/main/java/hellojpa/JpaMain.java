@@ -20,28 +20,29 @@ public class JpaMain {
         entityTransaction.begin();
 
         try {
+            Team team = new Team();
+            team.setName("team");
+            entityManager.persist(team);
+
             Member member = new Member();
             member.setUsername("user1");
+            member.setTeam(team);
             entityManager.persist(member);
 
             entityManager.flush();
             entityManager.clear();
 
-            Member reMember = entityManager.getReference(Member.class, member.getId());
-            
-            // 프록시 인스턴스 초기화 여부 확인
-            // 지금 실행 할 경우 프록시가 초기화 되어 있지 않기 때문에 false를 리턴
-            System.out.println("isLoaded : " + entityManagerFactory
-                    .getPersistenceUnitUtil().isLoaded(reMember));
+            // member만 쿼리 실행된다.
+            Member findMember = entityManager.find(Member.class, member.getId());
+            // team은 프록시 객체라는걸 확인 가능
+            System.out.println("team: " + findMember.getTeam().getClass());
 
-            // 프록시 클래스 확인 방법
-            System.out.println("getClass() : " + reMember.getClass());
-            
-            // 프록시 강제 초기화 : hibernate에서 제공하는 기능
-            Hibernate.initialize(reMember);
-            
-            System.out.println("프록시 강제 초기화 후 isLoaded : " + entityManagerFactory
-                    .getPersistenceUnitUtil().isLoaded(reMember));
+            // team 을 조회할 경우 team은 프록시 객체이기 때문에 영속성 컨테이너의 도움으로
+            // DB와 연결해서 값을 알아낼 수 있다.
+            // 애플리케이션을 실행 할 경우 team 쿼리가 실행되는걸 확인 할 수 있다.
+            System.out.println("==================");
+            findMember.getTeam().getName();
+            System.out.println("==================");
 
             entityTransaction.commit();
         }catch (Exception e){
