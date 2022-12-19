@@ -14,7 +14,7 @@ public class Team extends BaseEntity{
     
     // 1대N 방식
     @OneToMany
-    @JoinColumn(name = "TEAM_ID")
+    @JoinColumn(name = "team")
     private List<Member> members = new ArrayList<>();
 
     public Long getTeamId() {
