@@ -32,14 +32,13 @@ public class JpaMain {
             entityManager.flush();
             entityManager.clear();
 
-            // member만 쿼리 실행된다.
+            // Member와 Team이 조인 돼서 실행.
             Member findMember = entityManager.find(Member.class, member.getId());
-            // team은 프록시 객체라는걸 확인 가능
+            // 즉시 로딩을 사용할 경우 team은 프록시 객체가 아니라는걸 확인 가능
             System.out.println("team: " + findMember.getTeam().getClass());
 
-            // team 을 조회할 경우 team은 프록시 객체이기 때문에 영속성 컨테이너의 도움으로
-            // DB와 연결해서 값을 알아낼 수 있다.
-            // 애플리케이션을 실행 할 경우 team 쿼리가 실행되는걸 확인 할 수 있다.
+            // 즉시 로딩을 사용할 경우 이미 Member와 Team이 한번에 조인 쿼리로 실행 됐기
+            // 때문에 Team 쿼리는 실행 될 필요가 없어 실행 되지 않는다.
             System.out.println("==================");
             findMember.getTeam().getName();
             System.out.println("==================");

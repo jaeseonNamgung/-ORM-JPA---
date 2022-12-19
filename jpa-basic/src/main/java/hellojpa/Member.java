@@ -17,11 +17,12 @@ public class Member extends BaseEntity {
     private String username;
 
     // 1대N 양방향 연관관계 방법
-    // fetch = FetchType.LAZY : 지연 로딩
-    // Member와 Team 중에 Member만 90% 이상 사용할 경우 지연로딩을 사용
-    // Team은 프록시 객체로 조회 되고 애플리케이션을 실행할 경우 Member 쿼리만 조회 되고
-    // Team은 필요할 경우 쿼리가 실행된다.
-    @ManyToOne(fetch = FetchType.LAZY)
+    // fetch = FetchType.EAGER : 즉시 로딩
+    // Member와 Team 중에 Member와 team이 90% 이상 같이 사용될 경우
+    // 즉시 로딩을 사용
+    // 즉시 로딩을 사용될 경우 Member와 Team이 조인으로 쿼리를 한번에 조회 된다.
+    // 실무에서 절대 사용하면 안된다. 무조건 지연 로딩으로 구현해야 한다.
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "TEAM_ID")
     private Team team;
 
