@@ -20,10 +20,18 @@ public class JpaMain {
         try {
             Member member = new Member();
             member.setUsername("user1");
-            member.setCreatedBy("kim");
-            member.setCreateDate(LocalDateTime.now());
-
             entityManager.persist(member);
+
+            entityManager.flush();
+            entityManager.clear();
+
+            // 프록시 객체 초기화
+            // 프록시 객체를 초기화 할 때는 쿼리문을 날리지 않는다.
+            Member findMember = entityManager.getReference(Member.class, member.getId());
+
+            // findMember.getUsername() 처럼 값을 꺼낼때 영속성 컨테이너를 통해 DB와 연결되어
+            // 쿼리문을 통해 값을 얻어 올 수 있다.
+            System.out.println("findMember.getName = " + findMember.getUsername());
 
 
             entityTransaction.commit();
