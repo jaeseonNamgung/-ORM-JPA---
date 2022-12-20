@@ -20,29 +20,18 @@ public class JpaMain {
         entityTransaction.begin();
 
         try {
-            Team team = new Team();
-            team.setName("team");
-            entityManager.persist(team);
 
-            Member member = new Member();
-            member.setUsername("user1");
-            member.setTeam(team);
-            entityManager.persist(member);
+            Child child1 = new Child();
+            child1.setName("child1");
+            Child child2 = new Child();
+            child2.setName("child2");
 
-            entityManager.flush();
-            entityManager.clear();
+            Parent parent = new Parent();
+            parent.addChild(child1);
+            parent.addChild(child2);
+            parent.setName("parent1");
 
-            // Member와 Team이 조인 돼서 실행.
-            Member findMember = entityManager.find(Member.class, member.getId());
-            // 즉시 로딩을 사용할 경우 team은 프록시 객체가 아니라는걸 확인 가능
-            System.out.println("team: " + findMember.getTeam().getClass());
-
-            // 즉시 로딩을 사용할 경우 이미 Member와 Team이 한번에 조인 쿼리로 실행 됐기
-            // 때문에 Team 쿼리는 실행 될 필요가 없어 실행 되지 않는다.
-            System.out.println("==================");
-            findMember.getTeam().getName();
-            System.out.println("==================");
-
+            entityManager.persist(parent);
             entityTransaction.commit();
         }catch (Exception e){
             entityTransaction.rollback();
