@@ -32,6 +32,16 @@ public class JpaMain {
             parent.setName("parent1");
 
             entityManager.persist(parent);
+
+            entityManager.flush();
+            entityManager.clear();
+
+            Parent findParent = entityManager.find(Parent.class, parent.getId());
+            // orphanRemoval = true 기능을 사용할 경우 부모 객체에서 자식 엔티티를 삭제 할 경우
+            // 자동으로 DB에 관련된 부모 객체에서 삭제된 자식이 삭제된다.
+            // delete from child where id = 부모 객체에서 삭제된 자식 ID
+            findParent.getChildList().remove(0);
+
             entityTransaction.commit();
         }catch (Exception e){
             entityTransaction.rollback();
