@@ -1,7 +1,6 @@
 package hellojpa;
 
 import javax.persistence.Embeddable;
-import java.time.LocalDateTime;
 
 // 임베디드 타입 구현 (임베디드 타입 구현 클래스에 메소드 사용도 가능)
 // 기본 생성자 필수
@@ -23,7 +22,7 @@ public class Address {
         return city;
     }
 
-    public void setCity(String city) {
+    private void setCity(String city) {
         this.city = city;
     }
 
@@ -31,7 +30,7 @@ public class Address {
         return street;
     }
 
-    public void setStreet(String street) {
+    private void setStreet(String street) {
         this.street = street;
     }
 
@@ -39,7 +38,7 @@ public class Address {
         return zipcode;
     }
 
-    public void setZipcode(String zipcode) {
+    private void setZipcode(String zipcode) {
         this.zipcode = zipcode;
     }
 }

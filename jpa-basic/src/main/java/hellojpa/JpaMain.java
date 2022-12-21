@@ -21,6 +21,8 @@ public class JpaMain {
 
         try {
 
+
+
             Address address = new Address("city", "street", "zipcode");
 
             Member member1 =  new Member();
@@ -28,10 +30,10 @@ public class JpaMain {
 
             Member member2 =  new Member();
             member2.setHomeAddress(address);
-            // 같은 메모리를 참조하는 객체는 하나의 객체가 값을 변경해도
-            // 같은 메모리를 참조하는 모든 객체가 값이 변경되는 SideEffect가
-            // 발생하게 된다.
-            member2.getHomeAddress().setCity("city2");
+
+            // set 메소드를 private 으로 지정하면
+            // 다른 클래스에서 set 메소드를 샤용할 수 없다.
+            // member2.getHomeAddress().setCity("city2");
             entityManager.persist(member1);
             entityManager.persist(member2);
 
