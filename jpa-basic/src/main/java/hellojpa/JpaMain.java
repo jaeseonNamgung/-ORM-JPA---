@@ -7,6 +7,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 
 public class JpaMain {
@@ -21,21 +22,19 @@ public class JpaMain {
 
         try {
 
-
-
             Address address = new Address("city", "street", "zipcode");
 
-            Member member1 =  new Member();
-            member1.setHomeAddress(address);
+            Member member = new Member();
+            member.setUsername("member1");
+            member.setHomeAddress(address);
+            member.getFavoriteFoods().add("치킨");
+            member.getFavoriteFoods().add("피자");
+            member.getFavoriteFoods().add("족발");
 
-            Member member2 =  new Member();
-            member2.setHomeAddress(address);
+            member.getAddressHistory().add(new Address("old1", "street", "zipcode"));
+            member.getAddressHistory().add(new Address("old2", "street", "zipcode"));
 
-            // set 메소드를 private 으로 지정하면
-            // 다른 클래스에서 set 메소드를 샤용할 수 없다.
-            // member2.getHomeAddress().setCity("city2");
-            entityManager.persist(member1);
-            entityManager.persist(member2);
+            entityManager.persist(member);
 
 
             entityTransaction.commit();

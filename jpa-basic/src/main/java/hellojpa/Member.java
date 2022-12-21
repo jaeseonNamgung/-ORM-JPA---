@@ -4,6 +4,10 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAmount;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Member{
@@ -31,24 +35,16 @@ public class Member{
     private Period period;
     @Embedded
     private Address homeAddress;
+    
+    
+    // 값 타입 컬렉션
+    @ElementCollection
+    @JoinTable(name = "FAVORITE_FOOD", joinColumns = @JoinColumn(name = "member_id"))
+    private Set<String> favoriteFoods = new HashSet<>();
 
-    @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(
-                    name = "city",
-                    column = @Column(name = "WORK_CITY")
-            ),
-            @AttributeOverride(
-                    name = "street",
-                    column = @Column(name ="WORK_STREET")
-            ),
-            @AttributeOverride(
-                    name = "zipcode",
-                    column = @Column(name ="WORK_ZIPCODE")
-            )
-            }
-    )
-    private Address workAddress;
+    @ElementCollection
+    @JoinTable(name = "ADDRESS", joinColumns = @JoinColumn(name = "member_id"))
+    private List<Address> addressHistory = new ArrayList<>();
 
 
     public Long getId() {
@@ -91,11 +87,20 @@ public class Member{
         this.homeAddress = homeAddress;
     }
 
-    public Address getWorkAddress() {
-        return workAddress;
+
+    public Set<String> getFavoriteFoods() {
+        return favoriteFoods;
     }
 
-    public void setWorkAddress(Address workAddress) {
-        this.workAddress = workAddress;
+    public void setFavoriteFoods(Set<String> favoriteFoods) {
+        this.favoriteFoods = favoriteFoods;
+    }
+
+    public List<Address> getAddressHistory() {
+        return addressHistory;
+    }
+
+    public void setAddressHistory(List<Address> addressHistory) {
+        this.addressHistory = addressHistory;
     }
 }
