@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.TemporalAmount;
 
 @Entity
-public class Member extends BaseEntity {
+public class Member{
 
     @Id
     @GeneratedValue
@@ -25,6 +25,12 @@ public class Member extends BaseEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "TEAM_ID")
     private Team team;
+
+    // 사용할 임베디드 타입을 지정
+    @Embedded
+    private Period period;
+    @Embedded
+    private Address address;
 
 
     public Long getId() {
@@ -49,5 +55,21 @@ public class Member extends BaseEntity {
 
     public void setTeam(Team team) {
         this.team = team;
+    }
+
+    public Period getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(Period period) {
+        this.period = period;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 }
