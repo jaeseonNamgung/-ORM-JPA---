@@ -30,7 +30,25 @@ public class Member{
     @Embedded
     private Period period;
     @Embedded
-    private Address address;
+    private Address homeAddress;
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(
+                    name = "city",
+                    column = @Column(name = "WORK_CITY")
+            ),
+            @AttributeOverride(
+                    name = "street",
+                    column = @Column(name ="WORK_STREET")
+            ),
+            @AttributeOverride(
+                    name = "zipcode",
+                    column = @Column(name ="WORK_ZIPCODE")
+            )
+            }
+    )
+    private Address workAddress;
 
 
     public Long getId() {
@@ -65,11 +83,19 @@ public class Member{
         this.period = period;
     }
 
-    public Address getAddress() {
-        return address;
+    public Address getHomeAddress() {
+        return homeAddress;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+    public void setHomeAddress(Address homeAddress) {
+        this.homeAddress = homeAddress;
+    }
+
+    public Address getWorkAddress() {
+        return workAddress;
+    }
+
+    public void setWorkAddress(Address workAddress) {
+        this.workAddress = workAddress;
     }
 }

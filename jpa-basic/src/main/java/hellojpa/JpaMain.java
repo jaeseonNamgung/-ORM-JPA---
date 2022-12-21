@@ -22,7 +22,8 @@ public class JpaMain {
         try {
 
             Member member =  new Member();
-            member.setAddress(new Address("a", "aa", "aaa"));
+            member.setHomeAddress(new Address("a", "aa", "aaa"));
+            member.setWorkAddress(new Address("b", "bb", "bbb"));
             member.setPeriod(new Period(LocalDateTime.now(), LocalDateTime.now()));
             entityManager.persist(member);
 
