@@ -39,24 +39,20 @@ public class JpaMain {
             entityManager.flush();
             entityManager.clear();
 
-            // 조회
-            // member 만 조회 할 경우 컬렉션 값 타입은 조회 되지 않는다.
-            // 왜냐하면 컬렉션 값 타입은 지연 로딩이 기본 값이기 때문이다.
-            System.out.println("==========조회==============");
             Member findMember = entityManager.find(Member.class, member.getId());
 
-            // 컬렉션을 조회 했을 때 비로서 컬렉션 테이블도 select 된다.
-            List<Address> addressHistory = findMember.getAddressHistory();
-            for (Address value : addressHistory) {
-                System.out.println("getCity = " + value.getCity());
-                System.out.println("getStreet = " + value.getStreet());
-                System.out.println("getZipcode = " + value.getZipcode());
-            }
-
-            Set<String> favoriteFoods = findMember.getFavoriteFoods();
-            for (String value: favoriteFoods) {
-                System.out.println("favoriteFoods = " + value);
-            }
+            // 수정
+            // 1. 인베디드 타입 수정
+            // 값을 수정하기 위해서는 set 메소드를 사용하면 위험하므로 생성자를 통해 값을 통째로
+            // 변경해 줘야 한다.
+            Address a =findMember.getHomeAddress();
+            findMember.setHomeAddress(new Address("newCity", a.getStreet(), a.getZipcode()));
+            
+            // 2. 컬렉션 값 수정 : 치킨 -> 한식
+            // 컬렉션 값 타입을 수정하기 위해서는 변경하려는 값을 삭제 후
+            // 값을 수정해 줘야 한다.
+            findMember.getFavoriteFoods().remove("치킨");
+            findMember.getFavoriteFoods().add("한식");
 
 
 
