@@ -31,9 +31,13 @@ public class Member{
     @JoinTable(name = "FAVORITE_FOOD", joinColumns = @JoinColumn(name = "member_id"))
     private Set<String> favoriteFoods = new HashSet<>();
 
-    @ElementCollection
-    @JoinTable(name = "ADDRESS", joinColumns = @JoinColumn(name = "member_id"))
-    private List<Address> addressHistory = new ArrayList<>();
+//    @ElementCollection
+//    @JoinTable(name = "ADDRESS", joinColumns = @JoinColumn(name = "member_id"))
+//    private List<Address> addressHistory = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "member_id")
+    private List<AddressEntity> addressHistory = new ArrayList<>();
 
 
     public Long getId() {
@@ -69,11 +73,11 @@ public class Member{
         this.favoriteFoods = favoriteFoods;
     }
 
-    public List<Address> getAddressHistory() {
+    public List<AddressEntity> getAddressHistory() {
         return addressHistory;
     }
 
-    public void setAddressHistory(List<Address> addressHistory) {
+    private void setAddressHistory(List<AddressEntity> addressHistory) {
         this.addressHistory = addressHistory;
     }
 }

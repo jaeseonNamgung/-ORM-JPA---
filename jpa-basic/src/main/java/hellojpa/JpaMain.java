@@ -32,29 +32,12 @@ public class JpaMain {
             member.getFavoriteFoods().add("피자");
             member.getFavoriteFoods().add("족발");
 
-            member.getAddressHistory().add(new Address("old1", "street", "zipcode"));
-            member.getAddressHistory().add(new Address("old2", "street", "zipcode"));
+            member.getAddressHistory().add(new AddressEntity("old1", "street", "zipcode"));
+            member.getAddressHistory().add(new AddressEntity("old2", "street", "zipcode"));
             entityManager.persist(member);
 
             entityManager.flush();
             entityManager.clear();
-
-            Member findMember = entityManager.find(Member.class, member.getId());
-
-            // 수정
-            // 1. 인베디드 타입 수정
-            // 값을 수정하기 위해서는 set 메소드를 사용하면 위험하므로 생성자를 통해 값을 통째로
-            // 변경해 줘야 한다.
-            Address a =findMember.getHomeAddress();
-            findMember.setHomeAddress(new Address("newCity", a.getStreet(), a.getZipcode()));
-            
-            // 2. 컬렉션 값 수정 : 치킨 -> 한식
-            // 컬렉션 값 타입을 수정하기 위해서는 변경하려는 값을 삭제 후
-            // 값을 수정해 줘야 한다.
-            findMember.getFavoriteFoods().remove("치킨");
-            findMember.getFavoriteFoods().add("한식");
-
-
 
 
             entityTransaction.commit();
