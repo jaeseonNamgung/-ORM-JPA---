@@ -20,13 +20,10 @@ public class JpaMain {
             member.setAge(26);
             em.persist(member);
 
-            TypedQuery<Member> query =  em.createQuery("select m from Member m", Member.class);
 
-            List<Member> result =  query.getResultList();
-
-            // getSingleResult는 조회한 결과 값이 하나일 때 사용
-            // null 값이 거나 둘 이상일 때 Exception이 발생한다.
-            Member singleMember = query.getSingleResult();
+            Member singleResult = em.createQuery("select m from Member m where m.username =:username", Member.class)
+                    .setParameter("username", "member")
+                    .getSingleResult();
 
             et.commit();
 
