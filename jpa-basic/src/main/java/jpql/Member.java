@@ -3,7 +3,6 @@ package jpql;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class Member {
@@ -60,4 +59,13 @@ public class Member {
         this.team = team;
     }
 
+    @Override
+    public String toString() {
+        return "Member{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", age=" + age +
+                ", orderList=" + orderList +
+                '}';
+    }
 }
