@@ -20,10 +20,21 @@ public class JpaMain {
             member.setAge(26);
             em.persist(member);
 
+            // 엔티티 프로젝션
+            List<Member> memberList = em.createQuery("select m from Member m", Member.class)
+                    .getResultList();
+            // 엔티티 프로젝션
+            em.createQuery("select m.team from Member m", Member.class
+            );
+            // team을 member 에서 조회 할 때는
+            // 위에 코드 보다 아래 코드처럼 join을 이용해서 조회해야 한다.
+            em.createQuery("select t from Member m join Team t", Team.class);
 
-            Member singleResult = em.createQuery("select m from Member m where m.username =:username", Member.class)
-                    .setParameter("username", "member")
-                    .getSingleResult();
+            // 임베디드 타입 프로젝션
+            em.createQuery("select o.address from Order o", Address.class);
+            
+            // 스칼라 타입 프로젝션
+            em.createQuery("select distinct m.username, m.age from Member m");
 
             et.commit();
 
