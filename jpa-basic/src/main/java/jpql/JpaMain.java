@@ -20,21 +20,32 @@ public class JpaMain {
             member.setAge(26);
             em.persist(member);
 
-            // 엔티티 프로젝션
-            List<Member> memberList = em.createQuery("select m from Member m", Member.class)
-                    .getResultList();
-            // 엔티티 프로젝션
-            em.createQuery("select m.team from Member m", Member.class
-            );
-            // team을 member 에서 조회 할 때는
-            // 위에 코드 보다 아래 코드처럼 join을 이용해서 조회해야 한다.
-            em.createQuery("select t from Member m join Team t", Team.class);
+            em.flush();
+            em.clear();
 
-            // 임베디드 타입 프로젝션
-            em.createQuery("select o.address from Order o", Address.class);
-            
-            // 스칼라 타입 프로젝션
-            em.createQuery("select distinct m.username, m.age from Member m");
+            // 프로젝션 - 여러 값 조회
+            // 1번째 방법
+            List resultList =
+                    em.createQuery("select m.username, m.age from Member m")
+                                    .getResultList();
+            Object o = resultList.get(0);
+            Object[] result = (Object[]) o;
+            System.out.println("username = " + result[0]);
+            System.out.println("age = " + result[1]);
+
+            // 2번째 방법
+            List<Object[]> resultList2 =
+                    em.createQuery("select m.username, m.age from Member m")
+                            .getResultList();
+            Object[] result1 = resultList2.get(0);
+
+            // 3번째 방법
+            // MemberDTO를 이용한 값 조회
+            em.createQuery("select new jpql.MemberDTO(m.username, m.age) from Member m ", MemberDTO.class)
+                            .getResultList();
+
+
+
 
             et.commit();
 
