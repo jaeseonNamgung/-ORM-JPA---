@@ -12,20 +12,24 @@ public class Member {
     private String username;
     private int age;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TEAM_ID")
     private Team team;
 
-    @OneToMany(mappedBy = "member")
-    private List<Order> orderList = new ArrayList<>();
 
-    public List<Order> getOrderList() {
-        return orderList;
+
+
+
+    public void changeTeam(Team team){
+        if(this.team != null){
+            this.team.getMemberList().remove(this);
+        }
+
+        this.team = team;
+        team.getMemberList().add(this);
+
     }
 
-    public void setOrderList(List<Order> orderList) {
-        this.orderList = orderList;
-    }
 
     public Long getId() {
         return id;
@@ -65,7 +69,6 @@ public class Member {
                 "id=" + id +
                 ", username='" + username + '\'' +
                 ", age=" + age +
-                ", orderList=" + orderList +
                 '}';
     }
 }

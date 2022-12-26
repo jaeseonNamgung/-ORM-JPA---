@@ -15,27 +15,38 @@ public class JpaMain {
 
         try {
 
-            for(int i = 1; i <= 100; i++) {
-                Member member = new Member();
-                member.setUsername("member" + i);
-                member.setAge(i);
-                em.persist(member);
-            }
+            Team team = new Team();
+            team.setName("member");
+            em.persist(team);
+
+            Member member = new Member();
+            member.setUsername("member");
+            member.setAge(26);
+            member.changeTeam(team);
+            em.persist(member);
 
             em.flush();
             em.clear();
 
-            List<Member> resultList =
-                    em.createQuery("select m from Member m order by m.age desc", Member.class)
-                            .setFirstResult(1)
-                            .setMaxResults(10)
+
+            // inner join : inner은 생략 가능
+            List<Member> innerJoin = em.createQuery("select m from Member m inner join m.team t", Member.class)
                             .getResultList();
 
+            // outer join
+            List<Member> outerJoin = em.createQuery("select m from Member m left join m.team t", Member.class)
+                            .getResultList();
 
-            System.out.println("result.size = " + resultList.size());
-            for (Member m: resultList) {
-                System.out.println("result = " + m);
-            }
+            // 세타 조인
+            List<Member> thetaJon = em.createQuery("select m from Member m, Team t where m.username = t.name")
+                    .getResultList();
+
+            // on 절 사용
+            List<Member> on = em.createQuery("select m from Member m left join m.team t on t.name = 'teamA' ")
+                    .getResultList();
+            // on 절 사용 - 연관 관계 없는 엔티티 외부 조인
+            List<Member> on2 = em.createQuery("select m from Member m left join Team t on m.username = t.name")
+                            .getResultList();
 
             et.commit();
 
