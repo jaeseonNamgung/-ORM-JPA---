@@ -14,77 +14,66 @@ public class JpaMain {
         et.begin();
 
         try {
-            Team team = new Team();
-            team.setName("팀A");
 
+            Team team = new Team();
+            team.setName("team");
 
             Member member = new Member();
-            member.setUsername("member1");
             member.setAge(26);
+            member.setUsername("member");
             member.changeTeam(team);
-
             em.persist(member);
 
             em.flush();
             em.clear();
 
-            // 기본 CASE 식
-            String query = "select " +
-                    "case when m.age <= 10 then '학생요금' " +
-                    "when m.age >= 60 then '경로요금' " +
-                    "else '일반요금' " +
-                    "end " +
-                    "from Member m";
 
-            List<String> memberList = em.createQuery(query, String.class)
-                            .getResultList();
-            for (String value: memberList) {
-                System.out.println("result: " + value);
-            }
-
-            // 단순 CASE 식
-            String query2 = "select " +
-                    "case t.name " +
-                    "when '팀A' then '인세티브110%' " +
-                    "when '팀B' then '인제티브120%' " +
-                    "else '인세티브105%' " +
-                    "end " +
-                    "from Team t";
-
-            List<String> teamList = em.createQuery(query2, String.class)
+            // CONCAT(str, 이어 붙일 문자열) : 문자열 이어 붙이기
+            List<String> result = em.createQuery("select concat(m.username, ' userName') from Member m", String.class)
                     .getResultList();
-            for (String value: teamList) {
-                System.out.println("teamResult: " + value);
+            for (String value: result) {
+                System.out.println("concat: " + value);
             }
 
-            // COALESCE: 하나씩 조회해서 null이 아니면 반환 값을 반환 null 이면 coalesce에 지정한 값을 반환
-            Member member2 = new Member();
-            Team team2 = new Team();
-            member2.setUsername(null);
-            member2.changeTeam(team2);
-            em.persist(member2);
-            String query3 = "select coalesce(m.username, '이름 없는 회원') from Member m";
-            List<String> result3 = em.createQuery(query3, String.class)
+            // SUBSTRING(str, pos, len) : str 문자열을 pos 위치에서 (0이 아닌 1부터 시작) len 길이 만큼 문자열은 자른다.
+            result = em.createQuery("select substring(m.username, 2, 4) from Member m", String.class)
                             .getResultList();
-            for (String value: result3) {
-                System.out.println("COALESCE: " + value);
+            for (String value: result) {
+                System.out.println("SUBSTRING: " + value);
             }
-
-            // NULLIF: 두 값이 같으면 null 반환, 다르면 첫번 째 값 반환
-            // 사용자 이름이 관리자거나 null이면 null을 반환하고 나머지는 본인의 이름을 봔환
-            Team team3 = new Team();
-            Member member3 = new Member();
-            member3.setUsername("관리자");
-            member3.changeTeam(team3);
-            em.persist(member3);
-            String query4 = "select NULLIF(m.username, '관리자') from Member m where m.username is not null";
-            List<String> result4 = em.createQuery(query4, String.class)
+            result = em.createQuery("select trim('     문자열 공백 제거     ') from Member m", String.class)
                             .getResultList();
-            for (String value: result4) {
-                System.out.println("NULLIF: " + value);
+
+            // TRIM(str): 문자열 시작과 끝 부분 공백 제거
+            for (String value: result) {
+                System.out.println("TRIM: " + value);
             }
 
+            // LOWER(str): 소문자로 변경, UPPER(str): 대문자로 변경
+            String str = em.createQuery("select lower('ABCDE') from Member m", String.class)
+                    .getSingleResult();
+            System.out.println("LOWER: " + str);
+            str = em.createQuery("select UPPER('abcde') from Member m", String.class)
+                    .getSingleResult();
+            System.out.println("UPPER: " + str);
+            // LENGTH(str) : 문자열 길이
+            Integer init = em.createQuery("select length('abcde') from Member m", Integer.class)
+                    .getSingleResult();
+            System.out.println("LENGTH: " + init);
 
+            // LOCATE(substr, str, [pos]): str 에 있는 문자열 substr 의 검색위치를 정수로 반환하는데, substr 이 str 에 없으면 0을 반환
+            init = em.createQuery("select LOCATE('jae', 'namgungjaeseon') from Member m", Integer.class)
+                    .getSingleResult();
+            System.out.println("LOCATE: " + init);
+
+            // ABS(숫자)`: 절댓값을 반환하는 함수,
+            // SQRT(숫자): 제곱근을 반환하는 함수,
+            // MOD(분자 분모): 분자를 분모를 나눈 나머지를 구한다.
+            // SIZE(컬렉션): 컬렉션의 크기를 구하는 함수
+            init = em.createQuery("select size(t.memberList) from Team t", Integer.class)
+                    .getSingleResult();
+            System.out.println("SIZE: " + init);
+            // INDEX(별칭): LIST 타입 컬렉션의 위치값을 구하는 함수이며 JPA에서 쓰인다
 
 
             et.commit();
