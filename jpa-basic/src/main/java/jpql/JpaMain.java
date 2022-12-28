@@ -27,53 +27,35 @@ public class JpaMain {
             em.flush();
             em.clear();
 
+            // 상태 필드(state field): 단순히 값을 저장하기 위한 필드
+            // 특징: 경로 탐색의 끝, 탐색 X
+            String memberList =
+                    em.createQuery("select m.username from Member m", String.class)
+                                    .getSingleResult();
+            System.out.println("m.username: " + memberList);
+            // 단일 값 연관 필드:
+            // @ManyToOne, @OneToOne, 대상이 엔티티(ex:m.team)
+            // 특징: 묵시적 내부 조인(inner join) 발생, 탐색O
+            // 예: m.team 에서 m.team.name으로 탐색 가능
+            memberList =
+                    em.createQuery("select m.team.name from Member m", String.class)
+                            .getSingleResult();
+            System.out.println("m.team.name: " + memberList);
 
-            // CONCAT(str, 이어 붙일 문자열) : 문자열 이어 붙이기
-            List<String> result = em.createQuery("select concat(m.username, ' userName') from Member m", String.class)
-                    .getResultList();
-            for (String value: result) {
-                System.out.println("concat: " + value);
-            }
+            // 컬렉션 값 연관 필드:
+            //@OneToMany, @ManyToMany, 대상이 컬렉션(ex:m.orders)
+            //특징: 묵시적 내부 조인 발생, 탐색X (size 만 탐색 가능)
+            // From 절에서 명시적 조인을 통해 별칭을 얻으면 별칭을 통해 탐색 가능
+            Object o =
+                    em.createQuery("select t.memberList from Team t", Object.class)
+                            .getSingleResult();
+            System.out.println("t.memberList: " + o);
 
-            // SUBSTRING(str, pos, len) : str 문자열을 pos 위치에서 (0이 아닌 1부터 시작) len 길이 만큼 문자열은 자른다.
-            result = em.createQuery("select substring(m.username, 2, 4) from Member m", String.class)
-                            .getResultList();
-            for (String value: result) {
-                System.out.println("SUBSTRING: " + value);
-            }
-            result = em.createQuery("select trim('     문자열 공백 제거     ') from Member m", String.class)
-                            .getResultList();
-
-            // TRIM(str): 문자열 시작과 끝 부분 공백 제거
-            for (String value: result) {
-                System.out.println("TRIM: " + value);
-            }
-
-            // LOWER(str): 소문자로 변경, UPPER(str): 대문자로 변경
-            String str = em.createQuery("select lower('ABCDE') from Member m", String.class)
-                    .getSingleResult();
-            System.out.println("LOWER: " + str);
-            str = em.createQuery("select UPPER('abcde') from Member m", String.class)
-                    .getSingleResult();
-            System.out.println("UPPER: " + str);
-            // LENGTH(str) : 문자열 길이
-            Integer init = em.createQuery("select length('abcde') from Member m", Integer.class)
-                    .getSingleResult();
-            System.out.println("LENGTH: " + init);
-
-            // LOCATE(substr, str, [pos]): str 에 있는 문자열 substr 의 검색위치를 정수로 반환하는데, substr 이 str 에 없으면 0을 반환
-            init = em.createQuery("select LOCATE('jae', 'namgungjaeseon') from Member m", Integer.class)
-                    .getSingleResult();
-            System.out.println("LOCATE: " + init);
-
-            // ABS(숫자)`: 절댓값을 반환하는 함수,
-            // SQRT(숫자): 제곱근을 반환하는 함수,
-            // MOD(분자 분모): 분자를 분모를 나눈 나머지를 구한다.
-            // SIZE(컬렉션): 컬렉션의 크기를 구하는 함수
-            init = em.createQuery("select size(t.memberList) from Team t", Integer.class)
-                    .getSingleResult();
-            System.out.println("SIZE: " + init);
-            // INDEX(별칭): LIST 타입 컬렉션의 위치값을 구하는 함수이며 JPA에서 쓰인다
+            // From 절에서 명시적 조인을 통해 별칭을 얻으면 별칭을 통해 탐색 가능
+            memberList =
+                    em.createQuery("select m.username from Team t join t.memberList m", String.class)
+                            .getSingleResult();
+            System.out.println("t.memberList.username: " + memberList);
 
 
             et.commit();
