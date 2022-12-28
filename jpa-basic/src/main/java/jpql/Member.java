@@ -12,13 +12,9 @@ public class Member {
     private String username;
     private int age;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "TEAM_ID")
     private Team team;
-
-
-
-
 
     public void changeTeam(Team team){
         if(this.team != null){
