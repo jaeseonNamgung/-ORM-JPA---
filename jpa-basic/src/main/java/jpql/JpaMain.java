@@ -24,20 +24,12 @@ public class JpaMain {
            member.changeTeam(team);
            em.persist(member);
 
-           // where m = :member 엔티티 직접 사용
-            // where m.id = memberId 와 같다
-            // 실행된 SQL : select m.* from Member m where m.id = ?
-
-           Member findMember = em.createQuery("select m from Member m where m = :member", Member.class)
-                           .setParameter("member", member)
-                                   .getSingleResult();
+           Member findMember = em.createNamedQuery("Member.findByUsername", Member.class)
+                           .setParameter("username", member.getUsername())
+                           .getSingleResult();
             System.out.println("result: " + findMember);
 
-            // 엔티티 직접 사용 - 외래 키 값
-            findMember = em.createQuery("select m from Member m where m.team = :team", Member.class)
-                            .setParameter("team", team)
-                                    .getSingleResult();
-            System.out.println("외래 키 값 result: " + findMember);
+
 
             et.commit();
 
