@@ -36,54 +36,26 @@ public class JpaMain {
             em.flush();
             em.clear();
 
-            // 일반 조회를 했을 경우 - 지연 로딩인 LAZY를 설정 했기 때문에
-            // 쿼리를 실행할 경우 member만 조회되고 team은 프록시 객체로써
-            // m.getTeam()으로 호출할 때 쿼리가 실행된다.
-            // 즉 최악의 경우 N + 1이 발생
-            // 인덱스 페치 조인
-            List<Member> memberList = em.createQuery("select m from Member m", Member.class)
-                            .getResultList();
-            for (Member m: memberList) {
-                System.out.println("memebr: " + m.getUsername() + "|team: " + m.getTeam().getName());
-                // memebr: 회원1|team: teamA (영속컨테이너)
-                // memebr: 회원2|team: teamA (캐시)
-                // memebr: 회원3|team: teamB (영속컨테이너)
-            }
-            // N + 1 문제를 해결하기 위한 방법
-            // 페치 조인(fetch join)
-            // 페지 조인을 사용할 경우 즉시 로딩처럼 쿼리를 한번에 실행 되기 때문에 N + 1 문제를 해결할 수 있다.
-            memberList = em.createQuery("select m from Member m join fetch m.team", Member.class)
-                            .getResultList();
-            for (Member m: memberList) {
-                System.out.println("fetch join(index) memebr: " + m.getUsername() + "|team: " + m.getTeam().getName());
-            }
-
-            // 컬렉션 페치 조인
-            List<Team> teamList = em.createQuery("select t from Team t join fetch t.memberList", Team.class)
+            // - 페치 조인 대상에는 별칭을 줄 수 없다. (페치 조인은 조인할 모든 값을 다 가져와야 된다.)
+            // 예) select m from Member m join fetch m.team as t
+            // - 둘 이상의 컬렉션은 페치 조인 할 수 없다.
+            // - 컬렉션을 페치 조인하면 페이징 API(setFirstResult, setMaxResult)를 사용할 수 없다.
+            //   1. 일대일, 다대일 같은 단일 값 연관 필드들은 페치 조인해도 페이징 가능
+            //   2. 하이버네이트는 경고 로그를 남기고 메모리에서 페이징(매우 위험)
+            //      일대다 에서 페이징 API 사용 방법
+            //          1. 다대일에서 페이징 API를 사용
+            //          2. @BatchSize 어노테이션 사용 (일대일 연관 매핑된 클래스에서 사용 예) team class)
+            //          글로버 셋팅으로 설정 가능 ( 더 많이 사용 )
+            //          <property name="hibernate.default_batch_fetch_size" value="100"/>
+            List<Team> teamList = em.createQuery("select t from Team t", Team.class)
+                            .setFirstResult(0)
+                            .setMaxResults(2)
                             .getResultList();
             for (Team t: teamList) {
                 System.out.println("fetch join(collection) team: " + t.getName() + "|memberss: " +
                         t.getMemberList().size());
                 for (Member m : t.getMemberList()){
                     System.out.println("member: " + m.getUsername());
-                }
-            }
-            
-            
-            // 중복 제거 방법 (페치 조인에 뻥튀기를 막기 위한 방법)
-            // - SQL의 DISTINCT는 중복된 결과를 제거하는 명령
-            // - JPQL의 DISTINCT 2가지 기능 제공
-            // 1. SQL에 DISTINCT를 추가
-            // 2. 애플리케이션에서 엔티티 중복 제거 (같은 식별자를 가진 team 엔티티 제거)
-
-            teamList = em.createQuery("select distinct t from Team t join fetch t.memberList", Team.class)
-                            .getResultList();
-
-            for (Team t: teamList) {
-                System.out.println("distinct team: " + t.getName() + "|memberss: " +
-                        t.getMemberList().size());
-                for (Member m : t.getMemberList()){
-                    System.out.println("distinct member: " + m.getUsername());
                 }
             }
 
